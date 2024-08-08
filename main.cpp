@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
+#include <synchapi.h>
 
 using namespace std;
 
@@ -44,13 +45,21 @@ vector<vector<double>> gramSchmidt(const vector<vector<double>>& vectors) {
         orthogonalizedVectors.push_back(v);
     }
 
-    for (auto & orthogonalizedVector : orthogonalizedVectors) {
-        orthogonalizedVector = normalize(orthogonalizedVector);
-    }
+//    for (auto & orthogonalizedVector : orthogonalizedVectors) {
+//        orthogonalizedVector = normalize(orthogonalizedVector);
+//    }
 
     return orthogonalizedVectors;
-
 }
+
+vector<vector<double>> normalizeVectors(const vector<vector<double>>& vectors) {
+    vector<vector<double>> normalizedVectors;
+    for (const auto & vector : vectors) {
+        normalizedVectors.push_back(normalize(vector));
+    }
+    return normalizedVectors;
+}
+
 
 [[maybe_unused]] bool verifyBase(const vector<vector<double>>& vectors) {
     size_t length = vectors[0].size();
@@ -62,26 +71,96 @@ vector<vector<double>> gramSchmidt(const vector<vector<double>>& vectors) {
 }
 
 int main() {
-//    vector<vector<double>> vectors = {
-//            {1, 0, 0},
-//            {0, 1, 0},
-//            {0, 0, 1},
-//    };
 
-    vector<vector<double>> vectors = {
-            {0, 2, 0},
-            {4, -1, -3},
-            {3, 2, 4},
-    };
+    int option;
 
-    vector<vector<double>> orthogonalizedVectors = gramSchmidt(vectors);
+    while (true) {
+        cout << "MENU" << endl;
+        cout << "1. OPERACIONES CON DOS VECTORES EN Rn" << endl;
+        cout << "2. ORTGONALIZAR Y NORMALIZAR VECTORES" << endl;
+        cout << "3. AUTOVALORES Y AUTOVECTORES" << endl;
+        cout << "4. FORMAS CUADRATICAS" << endl;
+        cout << "INGRESE UNA OPCION:";
 
-    for (const auto& vec : orthogonalizedVectors) {
-        for (double val : vec) {
-            cout << val << " ";
+        cin >> option;
+
+
+        switch (option) {
+            case 1:
+                cout << "1. OPERACIONES CON DOS VECTORES EN Rn" << endl;
+                break;
+            case 2:
+                cout << "2. ORTGONALIZAR Y NORMALIZAR VECTORES" << endl;
+                cout << "   INGRESE EL NUMERO DE VECTORES (n):";
+                int n;
+                cin >> n;
+                cout << "   TENGA EN CUENTA QUE EL CONJUNTO DE n VECTORES DEBE SER BASE DE Rn" << endl;
+                {
+                    vector<vector<double>> vectors(n, vector<double>(n));
+                    for (int i = 0; i < n; i++) {
+                        cout << "   INGRESE EL VECTOR " << i + 1 << ":";
+                        for (int j = 0; j < n; j++) {
+                            cin >> vectors[i][j];
+                        }
+                    }
+
+                    cout << "   VECTORES SIN ORTOGONALIZAR NI NORMALIZAR" << endl;
+
+                    Sleep(1000);
+                    for (const auto& vec : vectors) {
+                        cout << "   ";
+                        for (double val : vec) {
+                            cout << val << " ";
+                        }
+                        cout << endl;
+                    }
+
+                    Sleep(1000);
+                    vector<vector<double>> orthogonalizedVectors = gramSchmidt(vectors);
+                    cout << "   VECTORES ORTOGONALIZADOS" << endl;
+
+                    Sleep(1000);
+                    for (const auto& vec : orthogonalizedVectors) {
+                        cout << "   ";
+                        for (double val : vec) {
+                            if (val <= 0.000001) {
+                                val = 0;
+                            }
+                            cout << val << " ";
+                        }
+                        cout << endl;
+                    }
+
+                    Sleep(1000);
+                    vector<vector<double>> normalizedVectors = normalizeVectors(orthogonalizedVectors);
+                    cout << "   VECTORES ORTONORMALIZADOS" << endl;
+
+                    Sleep(1000);
+                    for (const auto& vec : normalizedVectors) {
+                        cout << "   ";
+                        for (double val : vec) {
+                            if (val <= 0.000001) {
+                                val = 0;
+                            }
+                            cout << val << " ";
+                        }
+                        cout << endl;
+                    }
+                }
+                break;
+            case 3:
+                cout << "3. AUTOVALORES Y AUTOVECTORES" << endl;
+                break;
+            case 4:
+                cout << "4. FORMAS CUADRATICAS" << endl;
+                break;
+            case 5:
+                cout << "SALIENDO..." << endl;
+                return 0;
+            default:
+                cout << "OPCION NO VALIDA" << endl;
+                break;
         }
-        cout << endl;
-    }
 
-    return 0;
+    }
 }
