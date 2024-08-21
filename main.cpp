@@ -9,6 +9,7 @@
 #include <windows.h>
 #endif
 
+
 void mySleep(int sleepMs)
 {
 #ifdef __unix__
@@ -28,15 +29,11 @@ void clearScreen() {
 #endif
 }
 
+#include "tres.h"
+#include "cuatro.h"
+
 using namespace std;
 
-double dotProduct(const vector<double>& a, const vector<double>& b) {
-    double result = 0;
-    for (size_t i = 0; i < a.size(); i++) {
-        result += a[i] * b[i];
-    }
-    return result;
-}
 
 vector<double> subtractScaledVector(const vector<double>& a, const vector<double>& b, double scale) {
     vector<double> result(a.size());
@@ -46,14 +43,6 @@ vector<double> subtractScaledVector(const vector<double>& a, const vector<double
     return result;
 }
 
-vector<double> normalize(const vector<double>& v) {
-    double norm = sqrt(dotProduct(v, v));
-    vector<double> result(v.size());
-    for (size_t i = 0; i < v.size(); i++) {
-        result[i] = v[i] / norm;
-    }
-    return result;
-}
 
 vector<vector<double>> gramSchmidt(const vector<vector<double>>& vectors) {
     size_t n = vectors.size();
@@ -95,14 +84,31 @@ vector<vector<double>> normalizeVectors(const vector<vector<double>>& vectors) {
     }
 }
 
-/*
-Las subopciones son
-Combinacion lineal
-Producto escalar
-Angulo entre ellos
-Proyeccion de un vector sobre otro
-Determinar si son parallelos, ortogonales o ninguno
- */
+
+void menu_4() {
+    conica conica;
+    generarConica(conica);
+    cout<<endl<<"el angulo de rotacion es: "<<AnguloDeRotacion(conica);
+    FormaCanonica(conica);
+}
+
+void menu_3() {
+    float A, B, C, D, E, F;
+    cout << "Enter the coefficients of the general equation" << endl;
+    cout << "A ="; cin >> A;
+    cout << "B ="; cin >> B; // c
+    cout << "C ="; cin >> C;
+    cout << "D ="; cin >> D;
+    cout << "E ="; cin >> E;
+    cout << "F ="; cin >> F;
+    cout << "\nThe general equation is: " << A << "x^2 + " << B << "xy + " << C << "y^2 + " << D << "x + " << E << "y + " << F << " = 0" << endl;
+
+    typeConic(A, B, C);
+    conicTransform(A, B, C, D, E, F);
+}
+
+
+
 void menu_1() {
     clearScreen();
 
@@ -194,11 +200,22 @@ void menu_1() {
             case 4:
                 cout << "4. PROYECCION DE UN VECTOR SOBRE OTRO" << endl;
                 {
-                    double dot = dotProduct(vectors[0], vectors[1]);
-                    double norm2 = sqrt(dotProduct(vectors[1], vectors[1]));
+                    int vectorIndex1, vectorIndex2;
+                    cout << "INGRESE EL INDICE DEL VECTOR A PROYECTAR: ";
+                    cin >> vectorIndex1;
+                    cout << "INGRESE EL INDICE DEL VECTOR SOBRE EL CUAL PROYECTAR: ";
+                    cin >> vectorIndex2;
+
+                    if (vectorIndex1 < 0 || vectorIndex1 >= vectors.size() || vectorIndex2 < 0 || vectorIndex2 >= vectors.size()) {
+                        cout << "INDICE DE VECTOR INVALIDO" << endl;
+                        break;
+                    }
+
+                    double dot = dotProduct(vectors[vectorIndex1], vectors[vectorIndex2]);
+                    double norm2 = sqrt(dotProduct(vectors[vectorIndex2], vectors[vectorIndex2]));
                     vector<double> projection(n);
                     for (int i = 0; i < n; i++) {
-                        projection[i] = (dot / (norm2 * norm2)) * vectors[1][i];
+                        projection[i] = (dot / (norm2 * norm2)) * vectors[vectorIndex2][i];
                     }
 
                     cout << "PROYECCION DE UN VECTOR SOBRE OTRO" << endl;
