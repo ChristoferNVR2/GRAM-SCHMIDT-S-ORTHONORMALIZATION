@@ -333,9 +333,11 @@ int main() {
                 break;
             case 3:
                 cout << "3. AUTOVALORES Y AUTOVECTORES" << endl;
+                menu_3();
                 break;
             case 4:
                 cout << "4. FORMAS CUADRATICAS" << endl;
+                menu_4();
                 break;
             case 5:
                 cout << "SALIENDO..." << endl;
